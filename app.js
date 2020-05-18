@@ -34,10 +34,10 @@ Ecwid.OnPageLoaded.add(function (page) {
 })
 
 //the script
-let newArr = []
 Ecwid.OnPageLoaded.add(async function(page){
-  if (page.type == "PRODUCT") {
-    //нормальный асинхронный GET-запрос, в ответе получаем json
+  let newArr = []
+  if (page.type == "PRODUCT" && window.location.pathname !== "/shop-en") {
+
     const myRequest = new XMLHttpRequest()
     const myStoreId = 6800182
     const myToken = 'public_khtTrj2iNrc682fPixDWPmXAGdRm1Sd1';
@@ -49,21 +49,124 @@ Ecwid.OnPageLoaded.add(async function(page){
   
     let response = await fetch(myRequestUrl);
   
-    if (response.ok) { // если HTTP-статус в диапазоне 200-299
-      // получаем тело ответа (см. про этот метод ниже)
+    if (response.ok) {
       responseBody = await response.json();
+      console.log(responseBody)
     } else {
-      alert("Ошибка HTTP: " + response.status);
+      console.log("Ошибка HTTP: " + response.status);
     }
   
     // creating an array with products, which quantity = 0
     for (let i = 0; i < responseBody.combinations.length; i++) {
-      if (responseBody.combinations[i].quantity === 0) {
+      if (responseBody.combinations[i].quantity == 0) {
         newArr.push(responseBody.combinations[i].options[0].value)
       }
     }
+
+    for (let i = 0; i <= newArr.length; i++) {
+      let labelTags = document.getElementsByTagName("label");
+      let searchText = newArr[i];
+      for (let ind = 0; ind < labelTags.length; ind++) {
+        if (labelTags[ind].textContent == searchText) {
+          let found = labelTags[ind];
+          found.parentElement.parentElement.style.display = "none"
+          break;
+        }
+      }
+    }
+  } /* ENGLISH VERSION */ else if (page.type == "PRODUCT" && window.location.pathname == "/shop-en") {
+
+    const myRequest = new XMLHttpRequest()
+    const myStoreId = 7874372
+    const myToken = 'public_G5hpzDadXYMZ1GwRUGXs41wGshsek1QE';
+    const productId = page.productId
+  
+    const myRequestUrl = 'https://app.ecwid.com/api/v3/' + myStoreId + '/products/' + productId + '?&token=' + myToken
+  
+    let responseBody = ''
+  
+    let response = await fetch(myRequestUrl);
+  
+    if (response.ok) {
+      responseBody = await response.json();
+      console.log(responseBody)
+    } else {
+      console.log("Ошибка HTTP: " + response.status);
+    }
+  
+    // creating an array with products, which quantity = 0
+    for (let i = 0; i < responseBody.combinations.length; i++) {
+      if (responseBody.combinations[i].quantity == 0) {
+        newArr.push(responseBody.combinations[i].options[0].value)
+      }
+    }
+
+    for (let i = 0; i <= newArr.length; i++) {
+      let labelTags = document.getElementsByTagName("label");
+      let searchText = newArr[i];
+      for (let ind = 0; ind < labelTags.length; ind++) {
+        if (labelTags[ind].textContent == searchText) {
+          let found = labelTags[ind];
+          found.parentElement.parentElement.style.display = "none"
+          break;
+        }
+      }
+    }
+
+    document.getElementsByClassName('product-details__label-container')[0].style.display = "none"
   }
-})
+});
+
+
+
+Ecwid.OnPageLoaded.add(async function(page){
+  let newArr = []
+  if (page.type == "PRODUCT" && window.location.pathname == "/shop-en") {
+
+    const myRequest = new XMLHttpRequest()
+    const myStoreId = 7874372
+    const myToken = 'public_G5hpzDadXYMZ1GwRUGXs41wGshsek1QE';
+    const productId = page.productId
+  
+    const myRequestUrl = 'https://app.ecwid.com/api/v3/' + myStoreId + '/products/' + productId + '?&token=' + myToken
+  
+    let responseBody = ''
+  
+    let response = await fetch(myRequestUrl);
+  
+    if (response.ok) {
+      responseBody = await response.json();
+      console.log(responseBody)
+    } else {
+      console.log("Ошибка HTTP: " + response.status);
+    }
+  
+    // creating an array with products, which quantity = 0
+    for (let i = 0; i < responseBody.combinations.length; i++) {
+      if (responseBody.combinations[i].quantity == 0) {
+        newArr.push(responseBody.combinations[i].options[0].value)
+      }
+    }
+
+    for (let i = 0; i <= newArr.length; i++) {
+      let labelTags = document.getElementsByTagName("label");
+      let searchText = newArr[i];
+      for (let ind = 0; ind < labelTags.length; ind++) {
+        if (labelTags[ind].textContent == searchText) {
+          let found = labelTags[ind];
+          found.parentElement.parentElement.style.display = "none"
+          break;
+        }
+      }
+    }
+
+    document.getElementsByClassName('product-details__label-container')[0].style.display = "none"
+   // responseBody=null
+  } else{
+    console.log('not the english version')
+  }
+});
+
 
 Ecwid.OnPageLoaded.add(function (page) {
   for (let i = 0; i <= newArr.length; i++) {
